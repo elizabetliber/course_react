@@ -1,4 +1,4 @@
-import {useState, useEffect, useCallback, useMemo} from 'react';
+import {useState, useEffect, useCallback, useMemo, useRef} from 'react';
 import {Container} from 'react-bootstrap';
 import './App.css';
 
@@ -8,6 +8,23 @@ const countTotal = (num) => {
 }
 const SliderTwo = (props) => {
     const [state, setState] = useState({slide: 0, autoplay: false})
+    const [text, setText] = useState("")
+    const myRef = useRef(1);
+
+    useEffect(() => {
+        console.log(myRef.current.value)
+        console.log("text", text)
+    })
+
+
+    const style = useMemo(() => ({
+        color: state.slide > 4 ? 'red' : "blue"
+    }), [state.slide]);
+
+    const total = useMemo(() => {
+        return countTotal(state.slide)
+    }, [state.slide])
+
     const getSomeImages = useCallback(() => {
         console.log('fetching')
         return [
@@ -17,9 +34,9 @@ const SliderTwo = (props) => {
         ]
     }, [state.slide])
 
-    function logging() {
-        console.log('log!')
-    }
+    useEffect(() => {
+        console.log('bitch, you better be joking')
+    }, [style])
 
     useEffect(() => {
         console.log("hello")
@@ -32,6 +49,10 @@ const SliderTwo = (props) => {
         }
     }, [state.autoplay])
 
+    function logging() {
+        console.log('log!')
+    }
+
     function changeSlide(i) {
         setState(state => ({...state, slide: state.slide + i}))
     }
@@ -40,19 +61,6 @@ const SliderTwo = (props) => {
         setState(state => ({...state, autoplay: !state.autoplay}))
     }
 
-
-    const total = useMemo(() => {
-        return countTotal(state.slide)
-    }, [state.slide])
-
-
-    const style = useMemo(() => ({
-        color: state.slide > 4 ? 'red' : "blue"
-    }), [state.slide]);
-
-    useEffect(() => {
-        console.log('bitch, you better be joking')
-    }, [style])
 
     return (
         <Container>
@@ -83,6 +91,10 @@ const SliderTwo = (props) => {
                         onClick={toggleAutoplay}
                     >toggle autoplay
                     </button>
+                </div>
+                <div className="buttons mt-3">
+                    <label htmlFor="exampleFormControl" className="form-label">Email Address</label>
+                    <input onChange={(e) => setText(e.target.value)} ref={myRef} type="email" className="form-control" id="exampleFormControl"/>
                 </div>
             </div>
         </Container>

@@ -1,7 +1,11 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect, useCallback, useMemo} from 'react';
 import {Container} from 'react-bootstrap';
 import './App.css';
 
+const countTotal = (num) => {
+    console.log("Counting...")
+    return num + 10;
+}
 const SliderTwo = (props) => {
     const [state, setState] = useState({slide: 0, autoplay: false})
     const getSomeImages = useCallback(() => {
@@ -37,22 +41,31 @@ const SliderTwo = (props) => {
     }
 
 
+    const total = useMemo(() => {
+        return countTotal(state.slide)
+    }, [state.slide])
+
+
+    const style = useMemo(() => ({
+        color: state.slide > 4 ? 'red' : "blue"
+    }), [state.slide]);
+
+    useEffect(() => {
+        console.log('bitch, you better be joking')
+    }, [style])
+
     return (
         <Container>
             <div className="slider w-50 m-auto">
                 <img className="d-block w-100"
                      src="https://www.planetware.com/wpimages/2020/02/france-in-pictures-beautiful-places-to-photograph-eiffel-tower.jpg"
                      alt="slide"/>
-                {/*{*/}
-                {/*    getSomeImages().map((url, i) => {*/}
-                {/*        return (*/}
-                {/*            <img key={i} className="d-block w-100" src={url} alt="slide"/>*/}
-                {/*        )*/}
-                {/*    })*/}
-                {/*}*/}
+
 
                 <Slide getSomeImages={getSomeImages}/>
                 <div className="text-center mt-5">Active slide {state.slide} <br/> {state.autoplay ? 'auto' : null}
+                </div>
+                <div style={style} className="text-center mt-5">Total slides: {total}
                 </div>
                 <div className="buttons mt-3">
                     <button
@@ -86,7 +99,7 @@ const Slide = ({getSomeImages}) => {
     return (
         <>
             {images && images.map((url, i) => {
-               return <img key={i} className="d-block w-100" src={url} alt="slide"/>
+                return <img key={i} className="d-block w-100" src={url} alt="slide"/>
             })}
         </>
     )
